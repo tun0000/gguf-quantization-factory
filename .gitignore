@@ -1,0 +1,16 @@
+# 模型檔不進 git(README 附 Hugging Face 連結)
+*.gguf
+*.safetensors
+*.bin
+
+# 工作目錄/暫存
+hf-stage/
+models/
+__pycache__/
+*.pyc
+.venv/
+.cache/
+
+# OS
+Thumbs.db
+.DS_Store

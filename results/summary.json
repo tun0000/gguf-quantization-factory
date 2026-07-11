@@ -1,0 +1,57 @@
+{
+  "model_id": "Qwen/Qwen2.5-3B-Instruct",
+  "gpu": "NVIDIA GeForce RTX 4090",
+  "llama_commit": "4f37f51",
+  "ppl_ctx": 512,
+  "dataset": "wikitext-2-raw-v1 (test split)",
+  "levels": [
+    {
+      "level": "F16",
+      "bytes": 6178317216,
+      "ppl": 9.0631,
+      "ppl_err": 0.06417,
+      "pp_ts": 19999.587827,
+      "tg_ts": 127.832482,
+      "vram_peak_mib": 8698,
+      "vram_delta_mib": 6735,
+      "advice": "無損基準;僅供對照或 VRAM 非常充裕時使用",
+      "dppl_pct": 0.0
+    },
+    {
+      "level": "Q8_0",
+      "bytes": 3285476256,
+      "ppl": 9.0806,
+      "ppl_err": 0.06432,
+      "pp_ts": 22389.25819,
+      "tg_ts": 206.780965,
+      "vram_peak_mib": 5888,
+      "vram_delta_mib": 3900,
+      "advice": "幾乎無損(ΔPPL 通常 <0.1%);對品質敏感的正式服務",
+      "dppl_pct": 0.193
+    },
+    {
+      "level": "Q5_K_M",
+      "bytes": 2224815008,
+      "ppl": 9.1883,
+      "ppl_err": 0.06519,
+      "pp_ts": 20976.908072,
+      "tg_ts": 270.392339,
+      "vram_peak_mib": 4630,
+      "vram_delta_mib": 2642,
+      "advice": "品質/大小平衡佳;VRAM 稍緊但仍重視品質的部署",
+      "dppl_pct": 1.381
+    },
+    {
+      "level": "Q4_K_M",
+      "bytes": 1929903008,
+      "ppl": 9.5741,
+      "ppl_err": 0.06843,
+      "pp_ts": 19691.227666,
+      "tg_ts": 300.21341,
+      "vram_peak_mib": 4348,
+      "vram_delta_mib": 2360,
+      "advice": "檔案最小、速度最快、品質損失可接受;日常使用與邊緣裝置的推薦預設",
+      "dppl_pct": 5.638
+    }
+  ]
+}
