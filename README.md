@@ -66,6 +66,17 @@ to Hugging Face. Everything runs locally on WSL2 with CUDA. See
 - **IQ4_XS**:比 Q4_K_M 再小 10%(1.62 vs 1.80 GiB),品質(+3.40%)仍優於未校正的 Q4_K_M
 - 結論:**4-bit 量化一律建議帶 imatrix**——這正是社群量化(bartowski 等)的標準做法
 
+### 追加實驗:imatrix 校正語料的語言重要嗎?
+
+用繁體中文維基百科(OpenCC 強制轉繁體)重跑 imatrix,和原本的英文 wikitext-2 版本
+比較繁中 held-out PPL,完整方法與數據見
+[zhtw-imatrix-experiment.md](results/zhtw-imatrix-experiment.md)。結論:
+
+- 繁中校正在繁中考題上確實小幅勝出(Q4_K_M:+2.39% vs 英文校正的 +2.54%),但差距不大
+- **有沒有做 imatrix 校正**比**校正語料的語言**重要得多(無校正 +5.63% → 有校正 ~+2.4~2.5%)
+- imatrix 修不了模型本身的語言傾向:繁中校正版本在 Ollama 實測時仍出現簡體用詞「由于」,
+  因為 imatrix 只影響量化時的數值精度分配,不會改寫模型預訓練學到的詞彙分佈
+
 ### 通用性驗證:同一條 pipeline 跑 Llama-3.2-3B-Instruct
 
 `scripts/pipeline.sh meta-llama/Llama-3.2-3B-Instruct` 一行跑完(不同架構、不同 tokenizer),
@@ -90,11 +101,12 @@ gguf-quantization-factory/
 ├── scripts/
 │   ├── setup_env.sh          # 環境建置:CUDA toolkit、編譯 llama.cpp、Python venv
 │   ├── pipeline.sh           # 主 pipeline:下載→轉檔→量化→PPL→bench→summary
-│   ├── prepare_wikitext.py   # 下載 wikitext-2-raw-v1 test split 當 PPL 語料
+│   ├── prepare_wikitext.py   # 下載 wikitext-2-raw-v1(train/test)當 PPL/imatrix 語料
+│   ├── prepare_zh_corpus.py  # 下載中文維基,OpenCC 強制轉繁體,當 imatrix/PPL 語料
 │   ├── measure_vram.sh       # 執行期間輪詢 nvidia-smi 記 VRAM 峰值
 │   ├── make_summary.py       # 解析 logs → results/summary-<model>.md 比較表
 │   └── upload_hf.py          # 上傳 GGUF 到 HF(可續傳)+ 自動產 model card
-├── ollama/Modelfile          # Ollama 部署檔(Qwen ChatML template + stop tokens)
+├── ollama/Modelfile*          # Ollama 部署檔(Qwen ChatML template + stop tokens,多個量化變體)
 ├── results/                  # 真實評測數據與原始 log
 └── README.md
 ```

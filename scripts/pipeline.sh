@@ -87,13 +87,14 @@ record_size() {  # record_size <level> <path> — upsert 到 sizes.tsv
 step_quantize() {
     record_size F16 "$F16_GGUF"
     for q in "${QUANTS[@]}"; do
-        local out qtype args; out="$(gguf_for "$q")"
-        qtype="${q%_IMAT}"   # Q4_K_M_IMAT → 量化型別仍是 Q4_K_M
+        local out qtype args imat; out="$(gguf_for "$q")"
+        qtype="${q%_IMAT}"; qtype="${qtype%_ZHTW}"   # 去除純標籤用後綴,保留真正的量化型別
         args=()
-        # IQ 系列與 *_IMAT 需要 importance matrix(先跑 imatrix step)
-        if [[ "$q" == IQ* || "$q" == *_IMAT ]]; then
-            [ -f "$MODEL_DIR/imatrix.dat" ] || { log "$q 需要 $MODEL_DIR/imatrix.dat,先跑 imatrix step"; exit 1; }
-            args+=(--imatrix "$MODEL_DIR/imatrix.dat")
+        # IQ 系列、*_IMAT、*_ZHTW 需要 importance matrix(先跑 imatrix step)
+        if [[ "$q" == IQ* || "$q" == *_IMAT || "$q" == *_ZHTW ]]; then
+            imat="${IMATRIX_FILE:-$MODEL_DIR/imatrix.dat}"
+            [ -f "$imat" ] || { log "$q 需要 $imat,先跑 imatrix step(可用 IMATRIX_OUT 指定路徑)"; exit 1; }
+            args+=(--imatrix "$imat")
         fi
         log "llama-quantize → $q(型別 $qtype ${args[*]:-})"
         "$LLAMA_BIN/llama-quantize" "${args[@]}" "$F16_GGUF" "$out" "$qtype" 2>&1 | tail -5
@@ -104,13 +105,14 @@ step_quantize() {
 }
 
 step_imatrix() {
-    local train="$DATA_DIR/wikitext-2-train.txt"
-    local imat="$MODEL_DIR/imatrix.dat"
-    if [ -f "$imat" ] && [ "${FORCE:-0}" != 1 ]; then log "imatrix 已存在,跳過"; return; fi
+    # 預設用 wikitext-2 train;CORPUS_FILE/IMATRIX_OUT 可覆寫成其他校正語料(如中文維基)
+    local train="${CORPUS_FILE:-$DATA_DIR/wikitext-2-train.txt}"
+    local imat="${IMATRIX_OUT:-$MODEL_DIR/imatrix.dat}"
+    if [ -f "$imat" ] && [ "${FORCE:-0}" != 1 ]; then log "imatrix 已存在,跳過($imat)"; return; fi
     # 校正語料一律用 train split(test split 留給 PPL 評測,避免資料污染)
     [ -f "$train" ] || "$PY" "$SCRIPT_DIR/prepare_wikitext.py" --out "$train" --split train --max-chars 8000000
     check_vram
-    log "llama-imatrix(wikitext-2 train,-ngl $NGL)→ $imat"
+    log "llama-imatrix($train,-ngl $NGL)→ $imat"
     "$LLAMA_BIN/llama-imatrix" -m "$F16_GGUF" -f "$train" -ngl "$NGL" -o "$imat" </dev/null 2>&1 \
         | tail -5
     ls -lh "$imat"

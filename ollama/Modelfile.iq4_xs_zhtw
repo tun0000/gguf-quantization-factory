@@ -1,0 +1,25 @@
+# Modelfile — Qwen2.5-3B-Instruct IQ4_XS(繁中維基 imatrix 校正)本機部署
+# 用法(GGUF 放在本檔同層):
+#   ollama create qwen2.5-3b-local:iq4_xs-zhtw -f Modelfile.iq4_xs_zhtw
+#   ollama run qwen2.5-3b-local:iq4_xs-zhtw "你好"
+FROM ./qwen2.5-3b-instruct-iq4_xs_zhtw.gguf
+
+# Qwen2.5 使用 ChatML 格式:<|im_start|>role ... <|im_end|>
+TEMPLATE """{{ if .System }}<|im_start|>system
+{{ .System }}<|im_end|>
+{{ end }}{{ if .Prompt }}<|im_start|>user
+{{ .Prompt }}<|im_end|>
+{{ end }}<|im_start|>assistant
+"""
+
+PARAMETER stop <|im_end|>
+PARAMETER stop <|im_start|>
+
+# Qwen2.5 官方 generation_config 建議值
+PARAMETER temperature 0.7
+PARAMETER top_p 0.8
+PARAMETER top_k 20
+PARAMETER repeat_penalty 1.05
+PARAMETER num_ctx 8192
+
+SYSTEM """You are Qwen, created by Alibaba Cloud. You are a helpful assistant."""
