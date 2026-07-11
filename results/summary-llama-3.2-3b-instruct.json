@@ -1,0 +1,57 @@
+{
+  "model_id": "meta-llama/Llama-3.2-3B-Instruct",
+  "gpu": "NVIDIA GeForce RTX 4090",
+  "llama_commit": "4f37f51",
+  "ppl_ctx": 512,
+  "dataset": "wikitext-2-raw-v1 (test split)",
+  "levels": [
+    {
+      "level": "F16",
+      "bytes": 6433687872,
+      "ppl": 10.5876,
+      "ppl_err": 0.07597,
+      "pp_ts": 20715.858274,
+      "tg_ts": 127.367317,
+      "vram_peak_mib": 8799,
+      "vram_delta_mib": 6885,
+      "advice": "無損基準;僅供對照或 VRAM 非常充裕時使用",
+      "dppl_pct": 0.0
+    },
+    {
+      "level": "Q8_0",
+      "bytes": 3421899072,
+      "ppl": 10.5986,
+      "ppl_err": 0.07612,
+      "pp_ts": 24897.048826,
+      "tg_ts": 206.285884,
+      "vram_peak_mib": 5961,
+      "vram_delta_mib": 4016,
+      "advice": "幾乎無損(ΔPPL 通常 <0.1%);對品質敏感的正式服務",
+      "dppl_pct": 0.104
+    },
+    {
+      "level": "Q5_K_M",
+      "bytes": 2322153792,
+      "ppl": 10.6803,
+      "ppl_err": 0.07681,
+      "pp_ts": 23300.725918,
+      "tg_ts": 280.134246,
+      "vram_peak_mib": 4894,
+      "vram_delta_mib": 2970,
+      "advice": "品質/大小平衡佳;VRAM 稍緊但仍重視品質的部署",
+      "dppl_pct": 0.876
+    },
+    {
+      "level": "Q4_K_M",
+      "bytes": 2019377472,
+      "ppl": 10.8905,
+      "ppl_err": 0.07801,
+      "pp_ts": 22565.353988,
+      "tg_ts": 308.004751,
+      "vram_peak_mib": 4353,
+      "vram_delta_mib": 2447,
+      "advice": "檔案最小、速度最快、品質損失可接受;日常使用與邊緣裝置的推薦預設",
+      "dppl_pct": 2.861
+    }
+  ]
+}

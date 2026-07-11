@@ -12,10 +12,10 @@ from pathlib import Path
 
 from huggingface_hub import HfApi
 
-QUANTS = ["Q4_K_M", "Q5_K_M", "Q8_0"]
+DEFAULT_QUANTS = ["Q4_K_M", "Q5_K_M", "Q8_0"]
 
 
-def build_model_card(repo_id: str, model_id: str, summary: dict) -> str:
+def build_model_card(repo_id: str, model_id: str, summary: dict, quants: list) -> str:
     model_name = model_id.split("/")[-1]
     rows_md = []
     for r in summary["levels"]:
@@ -26,7 +26,7 @@ def build_model_card(repo_id: str, model_id: str, summary: dict) -> str:
         pp = f"{r['pp_ts']:.2f}" if r.get("pp_ts") is not None else "—"
         tg = f"{r['tg_ts']:.2f}" if r.get("tg_ts") is not None else "—"
         vram = f"{r['vram_peak_mib']} MiB" if r.get("vram_peak_mib") else "—"
-        uploaded = "—(未上傳 not uploaded)" if r["level"] == "F16" else f"`{model_name}-{r['level']}.gguf`"
+        uploaded = f"`{model_name}-{r['level']}.gguf`" if r["level"] in quants else "—(未上傳 not uploaded)"
         rows_md.append(
             f"| {r['level']} | {size} | {ppl} | {dppl} | {pp} | {tg} | {vram} | {uploaded} |")
     table = "\n".join(rows_md)
@@ -110,6 +110,7 @@ def main() -> None:
     ap.add_argument("--summary-json", required=True, help="make_summary.py 產出的 summary.json")
     ap.add_argument("--repo-name", default=None, help="HF repo 名(預設 <ModelName>-GGUF)")
     ap.add_argument("--card-only", action="store_true", help="只更新 model card,不傳 GGUF")
+    ap.add_argument("--quants", nargs="+", default=DEFAULT_QUANTS, help="要上傳的量化等級")
     args = ap.parse_args()
 
     model_name = args.model_id.split("/")[-1]
@@ -124,7 +125,7 @@ def main() -> None:
     api.create_repo(repo_id, repo_type="model", exist_ok=True)
 
     summary = json.loads(Path(args.summary_json).read_text(encoding="utf-8"))
-    card = build_model_card(repo_id, args.model_id, summary)
+    card = build_model_card(repo_id, args.model_id, summary, args.quants)
     api.upload_file(
         path_or_fileobj=card.encode("utf-8"),
         path_in_repo="README.md",
@@ -138,7 +139,7 @@ def main() -> None:
         model_dir = Path(args.model_dir)
         stage = model_dir / "hf-stage"
         stage.mkdir(exist_ok=True)
-        for q in QUANTS:
+        for q in args.quants:
             src = model_dir / f"{slug}-{q.lower()}.gguf"
             dst = stage / f"{model_name}-{q}.gguf"
             if not dst.exists():

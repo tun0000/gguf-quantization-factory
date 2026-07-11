@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""解析 pipeline 產出的 logs,彙整成 results/summary.md 與 summary.json。
+"""解析 pipeline 產出的 logs,彙整成 results/summary-<slug>.md 與 summary-<slug>.json。
 
 輸入(位於 --logs 目錄):
   <slug>-sizes.tsv        量化等級 \t bytes
@@ -13,14 +13,26 @@ import re
 import subprocess
 from pathlib import Path
 
-LEVELS = ["F16", "Q8_0", "Q5_K_M", "Q4_K_M"]  # 依精度由高到低排
+PREFERRED_ORDER = ["F16", "Q8_0", "Q5_K_M", "Q4_K_M", "Q4_K_M_IMAT", "IQ4_XS"]  # 依精度由高到低排
 
 ADVICE = {
     "F16": "無損基準;僅供對照或 VRAM 非常充裕時使用",
     "Q8_0": "幾乎無損(ΔPPL 通常 <0.1%);對品質敏感的正式服務",
     "Q5_K_M": "品質/大小平衡佳;VRAM 稍緊但仍重視品質的部署",
     "Q4_K_M": "檔案最小、速度最快、品質損失可接受;日常使用與邊緣裝置的推薦預設",
+    "Q4_K_M_IMAT": "同 Q4_K_M 大小,imatrix 校正換取更低 PPL;要 4-bit 品質時優先選",
+    "IQ4_XS": "比 Q4_K_M 再小 ~10%(需 imatrix);極度受限的 VRAM/磁碟環境",
 }
+
+
+def discover_levels(logs: Path, slug: str) -> list:
+    """從 ppl log 檔自動偵測有哪些量化等級,依 PREFERRED_ORDER 排序,未知的排最後。"""
+    found = {
+        p.name[len(f"{slug}-ppl-"):-len(".log")]
+        for p in logs.glob(f"{slug}-ppl-*.log")
+    }
+    ordered = [l for l in PREFERRED_ORDER if l in found]
+    return ordered + sorted(found - set(ordered))
 
 
 def human_size(n: int) -> str:
@@ -92,8 +104,9 @@ def main() -> None:
             lvl, nbytes = line.split("\t")
             sizes[lvl] = int(nbytes)
 
+    levels = discover_levels(logs, args.slug)
     rows = []
-    for lvl in LEVELS:
+    for lvl in levels:
         ppl, ppl_err = parse_ppl(logs / f"{args.slug}-ppl-{lvl}.log")
         pp_ts, tg_ts = parse_bench(logs / f"{args.slug}-bench-{lvl}.json")
         vram_peak, vram_delta = parse_vram(logs / f"{args.slug}-vram-{lvl}.txt")

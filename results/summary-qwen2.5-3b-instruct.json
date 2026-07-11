@@ -52,6 +52,30 @@
       "vram_delta_mib": 2360,
       "advice": "檔案最小、速度最快、品質損失可接受;日常使用與邊緣裝置的推薦預設",
       "dppl_pct": 5.638
+    },
+    {
+      "level": "Q4_K_M_IMAT",
+      "bytes": 1929903296,
+      "ppl": 9.3241,
+      "ppl_err": 0.06646,
+      "pp_ts": 21121.760984,
+      "tg_ts": 302.567713,
+      "vram_peak_mib": 4299,
+      "vram_delta_mib": 2372,
+      "advice": "同 Q4_K_M 大小,imatrix 校正換取更低 PPL;要 4-bit 品質時優先選",
+      "dppl_pct": 2.88
+    },
+    {
+      "level": "IQ4_XS",
+      "bytes": 1739095232,
+      "ppl": 9.3713,
+      "ppl_err": 0.06682,
+      "pp_ts": 21769.35002,
+      "tg_ts": 303.615316,
+      "vram_peak_mib": 4128,
+      "vram_delta_mib": 2186,
+      "advice": "比 Q4_K_M 再小 ~10%(需 imatrix);極度受限的 VRAM/磁碟環境",
+      "dppl_pct": 3.401
     }
   ]
 }
