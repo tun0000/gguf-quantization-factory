@@ -13,7 +13,10 @@ import re
 import subprocess
 from pathlib import Path
 
-PREFERRED_ORDER = ["F16", "Q8_0", "Q5_K_M", "Q4_K_M", "Q4_K_M_IMAT", "Q4_K_M_ZHTW", "IQ4_XS", "IQ4_XS_ZHTW"]  # 依精度由高到低排
+PREFERRED_ORDER = [
+    "F16", "Q8_0", "Q5_K_M", "Q4_K_M", "Q4_K_M_IMAT", "Q4_K_M_ZHTW", "IQ4_XS", "IQ4_XS_ZHTW",
+    "IQ3_M", "IQ3_S", "IQ3_XS", "IQ3_XXS", "IQ2_M", "IQ2_S", "IQ2_XS", "IQ2_XXS",
+]  # 依精度由高到低排
 
 ADVICE = {
     "F16": "無損基準;僅供對照或 VRAM 非常充裕時使用",
@@ -24,6 +27,14 @@ ADVICE = {
     "Q4_K_M_ZHTW": "同 Q4_K_M 大小,繁中維基 imatrix 校正;繁中任務比 Q4_K_M_IMAT 再略勝一籌",
     "IQ4_XS": "比 Q4_K_M 再小 ~10%(需 imatrix,英文 wikitext 校正);極度受限的 VRAM/磁碟環境",
     "IQ4_XS_ZHTW": "同 IQ4_XS 大小,繁中維基 imatrix 校正;偏好中文的極限壓縮場景",
+    "IQ3_M": "3-bit 家族最溫和;品質明顯劣於 4-bit 但仍算可用,不建議日常使用",
+    "IQ3_S": "3-bit 家族,與 IQ3_M 品質接近(誤差範圍內);同上不建議日常使用",
+    "IQ3_XS": "3-bit 家族偏激進;品質持續下滑,僅供實驗或磁碟極度受限時嘗試",
+    "IQ3_XXS": "3-bit 家族最小;3-bit 內部的次要斷崖起點,品質明顯劣化",
+    "IQ2_M": "進入 2-bit,PPL 開始大幅跳升(此點後不建議一般使用);僅供研究崩潰曲線",
+    "IQ2_S": "2-bit,品質持續崩壞;不建議任何實際用途",
+    "IQ2_XS": "2-bit 偏激進;輸出品質已明顯不可靠",
+    "IQ2_XXS": "PPL 超過 2 倍 F16,實質崩潰;僅作為壓縮極限的參照點,不建議使用",
 }
 
 

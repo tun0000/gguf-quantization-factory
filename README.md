@@ -77,6 +77,17 @@ to Hugging Face. Everything runs locally on WSL2 with CUDA. See
 - imatrix 修不了模型本身的語言傾向:繁中校正版本在 Ollama 實測時仍出現簡體用詞「由于」,
   因為 imatrix 只影響量化時的數值精度分配,不會改寫模型預訓練學到的詞彙分佈
 
+### 追加實驗:量化多激進會開始崩潰?
+
+把 Qwen2.5-3B-Instruct 一路量到 IQ3、IQ2 家族(3.7~2.0 bpw),找崩潰臨界點。
+完整方法與 16 級全曲線見 [quantization-collapse-curve.md](results/quantization-collapse-curve.md)。結論:
+
+- **兩段斷崖**:4-bit→3-bit 損失跳 3 倍(+3.4%→+10~11%);3-bit→2-bit 再跳 2 倍以上
+  (IQ3_XXS +16.4% → IQ2_M +38.4%)
+- **崩潰臨界點在 IQ2 家族**:IQ2_M(+38%)已跨過「不建議一般使用」門檻,
+  IQ2_XXS(PPL +164%,是 F16 的 2.64 倍)是實質崩潰
+- 這是 **3B** 模型的結果;更大模型通常對激進量化更耐受,崩潰點會往更低 bpw 推移
+
 ### 通用性驗證:同一條 pipeline 跑 Llama-3.2-3B-Instruct
 
 `scripts/pipeline.sh meta-llama/Llama-3.2-3B-Instruct` 一行跑完(不同架構、不同 tokenizer),

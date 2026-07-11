@@ -100,6 +100,102 @@
       "vram_delta_mib": 2224,
       "advice": "同 IQ4_XS 大小,繁中維基 imatrix 校正;偏好中文的極限壓縮場景",
       "dppl_pct": 3.42
+    },
+    {
+      "level": "IQ3_M",
+      "bytes": 1488895168,
+      "ppl": 9.9827,
+      "ppl_err": 0.07021,
+      "pp_ts": 22226.488092,
+      "tg_ts": 341.540403,
+      "vram_peak_mib": 3620,
+      "vram_delta_mib": 1940,
+      "advice": "3-bit 家族最溫和;品質明顯劣於 4-bit 但仍算可用,不建議日常使用",
+      "dppl_pct": 10.147
+    },
+    {
+      "level": "IQ3_S",
+      "bytes": 1456864448,
+      "ppl": 9.9546,
+      "ppl_err": 0.07054,
+      "pp_ts": 21605.762528,
+      "tg_ts": 338.295047,
+      "vram_peak_mib": 3627,
+      "vram_delta_mib": 1948,
+      "advice": "3-bit 家族,與 IQ3_M 品質接近(誤差範圍內);同上不建議日常使用",
+      "dppl_pct": 9.837
+    },
+    {
+      "level": "IQ3_XS",
+      "bytes": 1391836352,
+      "ppl": 10.0373,
+      "ppl_err": 0.07052,
+      "pp_ts": 21557.883935,
+      "tg_ts": 350.315148,
+      "vram_peak_mib": 3536,
+      "vram_delta_mib": 1846,
+      "advice": "3-bit 家族偏激進;品質持續下滑,僅供實驗或磁碟極度受限時嘗試",
+      "dppl_pct": 10.749
+    },
+    {
+      "level": "IQ3_XXS",
+      "bytes": 1282827456,
+      "ppl": 10.5463,
+      "ppl_err": 0.07589,
+      "pp_ts": 21914.086034,
+      "tg_ts": 354.492343,
+      "vram_peak_mib": 3660,
+      "vram_delta_mib": 1980,
+      "advice": "3-bit 家族最小;3-bit 內部的次要斷崖起點,品質明顯劣化",
+      "dppl_pct": 16.365
+    },
+    {
+      "level": "IQ2_M",
+      "bytes": 1140516032,
+      "ppl": 12.5399,
+      "ppl_err": 0.09197,
+      "pp_ts": 19803.645587,
+      "tg_ts": 338.965722,
+      "vram_peak_mib": 11007,
+      "vram_delta_mib": 1684,
+      "advice": "進入 2-bit,PPL 開始大幅跳升(此點後不建議一般使用);僅供研究崩潰曲線",
+      "dppl_pct": 38.362
+    },
+    {
+      "level": "IQ2_S",
+      "bytes": 1061938368,
+      "ppl": 14.3376,
+      "ppl_err": 0.10649,
+      "pp_ts": 18590.727239,
+      "tg_ts": 338.721592,
+      "vram_peak_mib": 11122,
+      "vram_delta_mib": 1780,
+      "advice": "2-bit,品質持續崩壞;不建議任何實際用途",
+      "dppl_pct": 58.198
+    },
+    {
+      "level": "IQ2_XS",
+      "bytes": 1031546048,
+      "ppl": 15.5602,
+      "ppl_err": 0.1174,
+      "pp_ts": 19556.772585,
+      "tg_ts": 344.386629,
+      "vram_peak_mib": 11078,
+      "vram_delta_mib": 1742,
+      "advice": "2-bit 偏激進;輸出品質已明顯不可靠",
+      "dppl_pct": 71.687
+    },
+    {
+      "level": "IQ2_XXS",
+      "bytes": 948249792,
+      "ppl": 23.9641,
+      "ppl_err": 0.18902,
+      "pp_ts": 22406.261481,
+      "tg_ts": 365.614531,
+      "vram_peak_mib": 10991,
+      "vram_delta_mib": 1662,
+      "advice": "PPL 超過 2 倍 F16,實質崩潰;僅作為壓縮極限的參照點,不建議使用",
+      "dppl_pct": 164.414
     }
   ]
 }
