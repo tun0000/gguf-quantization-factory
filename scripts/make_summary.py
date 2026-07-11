@@ -13,15 +13,17 @@ import re
 import subprocess
 from pathlib import Path
 
-PREFERRED_ORDER = ["F16", "Q8_0", "Q5_K_M", "Q4_K_M", "Q4_K_M_IMAT", "IQ4_XS"]  # 依精度由高到低排
+PREFERRED_ORDER = ["F16", "Q8_0", "Q5_K_M", "Q4_K_M", "Q4_K_M_IMAT", "Q4_K_M_ZHTW", "IQ4_XS", "IQ4_XS_ZHTW"]  # 依精度由高到低排
 
 ADVICE = {
     "F16": "無損基準;僅供對照或 VRAM 非常充裕時使用",
     "Q8_0": "幾乎無損(ΔPPL 通常 <0.1%);對品質敏感的正式服務",
     "Q5_K_M": "品質/大小平衡佳;VRAM 稍緊但仍重視品質的部署",
     "Q4_K_M": "檔案最小、速度最快、品質損失可接受;日常使用與邊緣裝置的推薦預設",
-    "Q4_K_M_IMAT": "同 Q4_K_M 大小,imatrix 校正換取更低 PPL;要 4-bit 品質時優先選",
-    "IQ4_XS": "比 Q4_K_M 再小 ~10%(需 imatrix);極度受限的 VRAM/磁碟環境",
+    "Q4_K_M_IMAT": "同 Q4_K_M 大小,英文 wikitext imatrix 校正換取更低 PPL;要 4-bit 品質時優先選",
+    "Q4_K_M_ZHTW": "同 Q4_K_M 大小,繁中維基 imatrix 校正;繁中任務比 Q4_K_M_IMAT 再略勝一籌",
+    "IQ4_XS": "比 Q4_K_M 再小 ~10%(需 imatrix,英文 wikitext 校正);極度受限的 VRAM/磁碟環境",
+    "IQ4_XS_ZHTW": "同 IQ4_XS 大小,繁中維基 imatrix 校正;偏好中文的極限壓縮場景",
 }
 
 

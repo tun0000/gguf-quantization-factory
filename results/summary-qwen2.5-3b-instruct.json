@@ -62,8 +62,20 @@
       "tg_ts": 302.567713,
       "vram_peak_mib": 4299,
       "vram_delta_mib": 2372,
-      "advice": "同 Q4_K_M 大小,imatrix 校正換取更低 PPL;要 4-bit 品質時優先選",
+      "advice": "同 Q4_K_M 大小,英文 wikitext imatrix 校正換取更低 PPL;要 4-bit 品質時優先選",
       "dppl_pct": 2.88
+    },
+    {
+      "level": "Q4_K_M_ZHTW",
+      "bytes": 1929903296,
+      "ppl": 9.2671,
+      "ppl_err": 0.06576,
+      "pp_ts": 20469.409975,
+      "tg_ts": 289.341864,
+      "vram_peak_mib": 4295,
+      "vram_delta_mib": 2389,
+      "advice": "同 Q4_K_M 大小,繁中維基 imatrix 校正;繁中任務比 Q4_K_M_IMAT 再略勝一籌",
+      "dppl_pct": 2.251
     },
     {
       "level": "IQ4_XS",
@@ -74,8 +86,20 @@
       "tg_ts": 303.615316,
       "vram_peak_mib": 4128,
       "vram_delta_mib": 2186,
-      "advice": "比 Q4_K_M 再小 ~10%(需 imatrix);極度受限的 VRAM/磁碟環境",
+      "advice": "比 Q4_K_M 再小 ~10%(需 imatrix,英文 wikitext 校正);極度受限的 VRAM/磁碟環境",
       "dppl_pct": 3.401
+    },
+    {
+      "level": "IQ4_XS_ZHTW",
+      "bytes": 1739095232,
+      "ppl": 9.3731,
+      "ppl_err": 0.06674,
+      "pp_ts": 21919.701228,
+      "tg_ts": 295.066499,
+      "vram_peak_mib": 4120,
+      "vram_delta_mib": 2224,
+      "advice": "同 IQ4_XS 大小,繁中維基 imatrix 校正;偏好中文的極限壓縮場景",
+      "dppl_pct": 3.42
     }
   ]
 }
