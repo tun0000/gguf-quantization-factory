@@ -1,7 +1,9 @@
 # Ollama 部署實測紀錄
 
-- 模型:`qwen2.5-3b-local`(Q4_K_M,1.9 GB,由 [ollama/Modelfile](../ollama/Modelfile) 建立)
 - 環境:Windows 11 + Ollama 0.31.2,RTX 4090
+- 部署了兩個變體(同一 model 名下不同 tag):
+  - `qwen2.5-3b-local:latest`(Q4_K_M,1.9 GB,[ollama/Modelfile](../ollama/Modelfile))
+  - `qwen2.5-3b-local:iq4_xs`(IQ4_XS + imatrix,1.7 GB,[ollama/Modelfile.iq4_xs](../ollama/Modelfile.iq4_xs))
 - 建立指令:`ollama create qwen2.5-3b-local -f Modelfile` → `success`
 
 ## 測試問答(2026-07-11)
@@ -15,6 +17,23 @@ ollama run qwen2.5-3b-local "請用三句話向初學者解釋什麼是模型量
 **模型輸出(原樣記錄):**
 
 > 模型量化是指將模型中的浮点数参数转换为整数(如8位、16位或32位)的过程,以减少模型的计算复杂度和存储需求。对于大型语言模型来说,由于参数量庞大,直接在本地运行时会消耗大量内存和计算资源。通过量化模型,可以显著降低模型大小和运行开销,使模型能够更高效地在本机设备上执行,从而提升用户体验和系统性能。
+
+## IQ4_XS 變體同題實測(2026-07-11)
+
+**指令:**
+
+```
+ollama run qwen2.5-3b-local:iq4_xs "請用三句話向初學者解釋什麼是模型量化,以及為什麼在本機跑大型語言模型時需要它?"
+```
+
+**模型輸出(原樣記錄):**
+
+> 模型量化是指通過將模型權重和激活值從浮點數(如32位浮點數)轉換為整數(例如8位或16位),來減少模型大小和運行時消耗的存儲空間與計算資源,同時在一定程度上保持模型性能。在本機運行大型語言模型時,量化可以有效降低計算成本和能耗,使得在硬件限制較低的設備上也能運行大型模型,提升了模型的普及性和應用場景的靈活性。
+
+- ✅ Template/stop tokens 正常,內容正確扣題。
+- 這次輸出以繁體為主(僅用詞偏陸;對照 Q4_K_M 那次大幅飄簡體)——單次取樣的隨機差異,
+  不宜過度解讀為 IQ4_XS 品質較好的證據;可靠的品質比較請看 PPL 數據
+  (IQ4_XS +3.40% vs Q4_K_M +5.64%,見 [summary-qwen2.5-3b-instruct.md](summary-qwen2.5-3b-instruct.md))。
 
 ## 觀察
 
